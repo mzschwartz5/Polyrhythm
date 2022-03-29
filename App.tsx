@@ -1,11 +1,16 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import Measure from './src/components/Measure';
+import TouchPad from './src/components/TouchPad';
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
+      <Measure/>
+      <Measure/>
+      <Measure/>
+      <Measure/>
+      <TouchPad/>
     </View>
   );
 }
@@ -13,8 +18,10 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#E5E5E5',
     alignItems: 'center',
     justifyContent: 'center',
-  },
+    paddingHorizontal: 10,
+    paddingVertical: 15,
+  }
 });
