@@ -2,11 +2,11 @@ import { Svg, Circle } from 'react-native-svg';
 import { StyleSheet} from 'react-native'
 
 
-interface ITapInputProps {
+interface ITapDotProps {
     correct: boolean
 }
 
-const TapInput: React.FunctionComponent<ITapInputProps> = (props:ITapInputProps): JSX.Element =>
+const TapDot: React.FunctionComponent<ITapDotProps> = (props:ITapDotProps): JSX.Element =>
 {
     const {correct} = props;
     const fillColor = correct ? 'green' : 'none';
@@ -19,7 +19,7 @@ const TapInput: React.FunctionComponent<ITapInputProps> = (props:ITapInputProps)
     );
 }
 
-export default TapInput;
+export default TapDot;
 
 const styles = StyleSheet.create({
     dot: {

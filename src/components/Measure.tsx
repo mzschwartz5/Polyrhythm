@@ -2,14 +2,28 @@ import { StyleSheet, View } from 'react-native';
 import { Svg, Line } from 'react-native-svg';
 import Note from '../components/Note';
 import QuarterNote from 'music-notes/QuarterNote.png';
-import TapInput from '../components/TapInput';
+import TapDot from './TapDot';
+import InputHandler from '../classes/InputHandler';
+import { useEffect, useState } from 'react';
+import { ButtonTapEvent } from '../classes/InputHandler';
 
 interface IMeasureProps {
-
+    active: boolean;
 }
 
 const Measure: React.FunctionComponent<IMeasureProps> = (props:IMeasureProps): JSX.Element =>
 {
+    const { active } = props;
+    const [tapDots, setTapDots] = useState<number[]>([]);
+    const addTapDot = (newDot: number) => setTapDots((prev) => [newDot, ...prev]);
+
+    // On mount, start listening to Input Events. On unmount, stop listening.
+    useEffect(() => {
+        if (!active) return;
+
+        const subscriptionID = InputHandler.addEventListener(ButtonTapEvent, addTapDot) as string;
+        return () => {InputHandler.removeEventListener(subscriptionID)}; 
+    }, [active]);
 
     return(
         <View style={styles.measureContainer}>
@@ -22,10 +36,10 @@ const Measure: React.FunctionComponent<IMeasureProps> = (props:IMeasureProps): J
                     <Note imageSrc={QuarterNote} height={50} width={50}/>
                 </View>
                 <View style={styles.inputContainer}>
-                    <TapInput correct={false}/>
-                    <TapInput correct={true}/>
-                    <TapInput correct={true}/>
-                    <TapInput correct={true}/>
+                    <TapDot correct={false}/>
+                    <TapDot correct={true}/>
+                    <TapDot correct={true}/>
+                    <TapDot correct={true}/>
                 </View>
             </View>
         </View>

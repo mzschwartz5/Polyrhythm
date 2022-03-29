@@ -1,15 +1,14 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+ import { StyleSheet, Text, View } from 'react-native';
 import Measure from './src/components/Measure';
 import TouchPad from './src/components/TouchPad';
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Measure/>
-      <Measure/>
-      <Measure/>
-      <Measure/>
+      <Measure active={true}/>
+      <Measure active={false}/>
+      <Measure active={false}/>
+      <Measure active={false}/>
       <TouchPad/>
     </View>
   );

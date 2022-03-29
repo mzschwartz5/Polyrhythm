@@ -1,4 +1,5 @@
-import { View, StyleSheet} from 'react-native'
+import { View, StyleSheet, Pressable} from 'react-native'
+import InputHandler from '../classes/InputHandler';
 
 interface ITouchPadProps {
 
@@ -8,6 +9,10 @@ const TouchPad: React.FunctionComponent<ITouchPadProps> = (props:ITouchPadProps)
 {
     return(
         <View style={styles.touchPadContainer}>
+            <Pressable
+              onPress={InputHandler.ButtonTapped}
+              style={styles.button}
+            />
         </View>
     );
 }
@@ -21,7 +26,12 @@ const styles = StyleSheet.create({
         flexShrink: 1,
         marginVertical: 10,
         borderRadius: 10,
-        backgroundColor: "lightgrey"
+        backgroundColor: "lightgrey",
+    },
+
+    button: {
+        width: "100%",
+        flex: 1
     }
 
 })
