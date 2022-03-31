@@ -7,6 +7,7 @@ interface ITouchPadProps {
 
 const TouchPad: React.FunctionComponent<ITouchPadProps> = (props:ITouchPadProps): JSX.Element =>
 {
+
     return(
         <View style={styles.touchPadContainer}>
             <Pressable

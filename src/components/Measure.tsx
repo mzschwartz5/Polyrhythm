@@ -6,6 +6,8 @@ import TapDot from './TapDot';
 import InputHandler from '../classes/InputHandler';
 import { useEffect, useState } from 'react';
 import { ButtonTapEvent } from '../classes/InputHandler';
+import { useContext } from 'react';
+import { SettingsContext } from '../../App';
 
 interface IMeasureProps {
     active: boolean;
@@ -14,20 +16,29 @@ interface IMeasureProps {
 const Measure: React.FunctionComponent<IMeasureProps> = (props:IMeasureProps): JSX.Element =>
 {
     const { active } = props;
-    const [tapDots, setTapDots] = useState<number[]>([]);
-    const addTapDot = (newDot: number) => setTapDots((prev) => [newDot, ...prev]);
+    const [tapDots, setTapDots] = useState<number[]>([]); // fractions of measure duration where taps occurred
+    const [mountTime, setMountTime] = useState<number>(Date.now());  
+    const [measureWidth, setMeasureWidth] = useState(0);
+    const addTapDot = (newDotTime: number) => setTapDots((prev) => [(newDotTime - mountTime) / measureDuration, ...prev]); 
+    const PlaySettings = useContext(SettingsContext);
+    const measureDuration = 1000 * PlaySettings.beatsPerMeasure / (PlaySettings.beatsPerMinute / 60) ; // duration in milliseconds
 
-    // On mount, start listening to Input Events. On unmount, stop listening.
+    // On mount, start listening to Input Events; initialize timer. On unmount, stop listening.
     useEffect(() => {
         if (!active) return;
+
+        setMountTime(Date.now());
 
         const subscriptionID = InputHandler.addEventListener(ButtonTapEvent, addTapDot) as string;
         return () => {InputHandler.removeEventListener(subscriptionID)}; 
     }, [active]);
 
+    // Create TapDot elements from the tapDots array of positions
+    const TapDots = tapDots.map((percentPosition) => <TapDot position={percentPosition * measureWidth} correct={true} key={percentPosition}/> );
+
     return(
         <View style={styles.measureContainer}>
-            <View style={styles.measure}>
+            <View style={styles.measure}  onLayout={(event) => setMeasureWidth(event.nativeEvent.layout.width)}>
                 <MeasureLine/>
                 <View style={styles.noteContainer}>
                     <Note imageSrc={QuarterNote} height={50} width={50}/>
@@ -36,10 +47,7 @@ const Measure: React.FunctionComponent<IMeasureProps> = (props:IMeasureProps): J
                     <Note imageSrc={QuarterNote} height={50} width={50}/>
                 </View>
                 <View style={styles.inputContainer}>
-                    <TapDot correct={false}/>
-                    <TapDot correct={true}/>
-                    <TapDot correct={true}/>
-                    <TapDot correct={true}/>
+                    {TapDots}
                 </View>
             </View>
         </View>
@@ -95,7 +103,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         display: 'flex',
         flexDirection: 'row',
-        justifyContent: 'space-evenly',
-        flexWrap: 'nowrap'
+        flexWrap: 'nowrap',
+        justifyContent: 'flex-start'
     }
 })
