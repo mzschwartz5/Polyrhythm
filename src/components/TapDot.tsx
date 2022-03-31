@@ -3,6 +3,7 @@ import { StyleSheet} from 'react-native'
 
 
 interface ITapDotProps {
+    position: number;
     correct: boolean
 }
 
@@ -13,7 +14,7 @@ const TapDot: React.FunctionComponent<ITapDotProps> = (props:ITapDotProps): JSX.
     const strokeColor = correct ? 'green' : 'red';
 
     return(
-        <Svg height="100%" width="100%" style={styles.dot}>
+        <Svg height="100%" width="5%" style={styles(props).dot}>
             <Circle fill={fillColor} cx="50%" cy="80%" r="5" stroke={strokeColor} strokeWidth={2} />
         </Svg>
     );
@@ -21,10 +22,9 @@ const TapDot: React.FunctionComponent<ITapDotProps> = (props:ITapDotProps): JSX.
 
 export default TapDot;
 
-const styles = StyleSheet.create({
+const styles = (props:ITapDotProps) => StyleSheet.create({
     dot: {
-        flexGrow: 1,
-        flexShrink: 1,
-        flexBasis: .2
+        position: 'absolute',
+        marginLeft: props.position
     }
 })

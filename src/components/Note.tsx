@@ -1,4 +1,4 @@
-import { StyleSheet, View, Image, ImageSourcePropType } from 'react-native';
+import { StyleSheet, Image, ImageSourcePropType } from 'react-native';
 
 interface INoteProps {
     imageSrc: ImageSourcePropType,
@@ -8,15 +8,13 @@ interface INoteProps {
 
 const Note: React.FunctionComponent<INoteProps> = (props:INoteProps): JSX.Element =>
 {
-    const {imageSrc, height, width} = props;
+    const {imageSrc} = props;
 
     return(
-        <View>  
-            <Image style={styles(props).image} 
-                source={imageSrc}
-                resizeMode='contain'
-            />
-        </View>
+        <Image style={styles(props).image} 
+            source={imageSrc}
+            resizeMode='contain'
+        />
     );
 }
 
