@@ -1,12 +1,12 @@
 import { createContext } from "react";
 import { StyleSheet, View } from 'react-native';
-import Measure from './src/components/Measure';
+import MeasureGenerator from "./src/classes/MeasureGenerator";
 import Metronome from "./src/components/Metronome";
 import TouchPad from './src/components/TouchPad';
 
 const PlaySettings = {
     beatsPerMinute: 60,
-    beatsPerMeasure: 4
+    beatsPerMeasure: 4,
 }
 
 export const SettingsContext = createContext(PlaySettings);
@@ -16,10 +16,7 @@ export default function App() {
     <SettingsContext.Provider value={PlaySettings} >
       <View style={styles.container}>
         <Metronome/>
-        <Measure active={true}/>
-        <Measure active={false}/>
-        <Measure active={false}/>
-        <Measure active={false}/>
+        <MeasureGenerator/>
         <TouchPad/>
       </View>
     </SettingsContext.Provider>
