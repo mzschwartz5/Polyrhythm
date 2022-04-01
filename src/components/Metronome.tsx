@@ -1,7 +1,8 @@
 import { StyleSheet, SafeAreaView, Image, View} from 'react-native';
 import MetronomeIcon from '../assets/icons/MetronomeIcon.png';
 import { Svg, Circle, Text } from 'react-native-svg';
-import React, { useRef } from 'react';
+import { useEffect, useState, useContext } from 'react';
+import { SettingsContext } from '../../App';
 
 interface IMetronomeProps {
 
@@ -10,6 +11,9 @@ interface IMetronomeProps {
 const Metronome: React.FunctionComponent<IMetronomeProps> = (props:IMetronomeProps): JSX.Element =>
 {
 
+    const PlaySettings = useContext(SettingsContext);
+    const secondsPerBeat = 60 / PlaySettings.beatsPerMinute;
+
     return(
         <SafeAreaView style={styles.metronomeContainer}>
             <Image 
@@ -17,40 +21,47 @@ const Metronome: React.FunctionComponent<IMetronomeProps> = (props:IMetronomePro
               resizeMode='contain'
               style={styles.metronomeImage}
             />
-            <CounterDots parentWidth={50} parentHeight={50}/>
+            <CounterDots numDots={PlaySettings.beatsPerMeasure} timePerDot={secondsPerBeat} parentWidth={50} parentHeight={50}/>
         </SafeAreaView>
     );
 }
 export default Metronome;
 
 interface ICounterDotsProps {
+    numDots: number,
+    timePerDot: number,
     parentWidth: number,
-    parentHeight: number
+    parentHeight: number,
 }
 
 const CounterDots = (props:ICounterDotsProps): JSX.Element =>
 {
-    const {parentWidth, parentHeight} = props;
+    const {numDots, timePerDot, parentWidth, parentHeight} = props;
+    const [activeDot, setActiveDot] = useState(0);
+
+    useEffect(() => {
+      const intervalID = setInterval(() => setActiveDot(prev => (prev + 1) % numDots), timePerDot * 1000); // milliseconds
+
+      return () => {
+        clearInterval(intervalID);
+      }
+    }, []);
+    
+
+    const counters = Array.from({length: numDots}, (x, i) => i + 1).map((num) => {
+        const fillColor = (num === (activeDot + 1)) ? 'green' : 'none';
+
+        return (
+            <Svg style={styles.dots} key={num}>
+                <Circle stroke="black" cx="50%" cy="50%" r="15" strokeWidth={2} fill={fillColor} />
+                <Text   fontWeight='bold' fill='black' x={parentWidth/2} y={parentHeight/2} >{num}</Text>
+            </Svg>
+        )
+    });
 
     return(
         <View style={styles.counterDotsContainer}>
-            {/* TODO - for now, four dots. Later, determined by beatsPerMeasure setting */}
-            <Svg style={styles.dots}>
-                <Circle stroke="black" cx="50%" cy="50%" r="15" strokeWidth={2} fill='none' />
-                <Text fontWeight='bold' fill='black' x={parentWidth/2} y={parentHeight/2} >1</Text>
-            </Svg>
-            <Svg style={styles.dots}>
-                <Circle stroke="black" cx="50%" cy="50%" r="15" strokeWidth={2} fill='none'/>
-                <Text fontWeight='bold' fill='black' x={parentWidth/2} y={parentHeight/2} >2</Text>
-            </Svg>
-            <Svg style={styles.dots}>
-                <Circle stroke="black" cx="50%" cy="50%" r="15" strokeWidth={2} fill='none'/>
-                <Text fontWeight='bold' fill='black' x={parentWidth/2} y={parentHeight/2} >3</Text>
-            </Svg>
-            <Svg style={styles.dots}>
-                <Circle stroke="black" cx="50%" cy="50%" r="15" strokeWidth={2} fill='none'/>
-                <Text fontWeight='bold' fill='black' x={parentWidth/2} y={parentHeight/2} >4</Text>
-            </Svg>
+            {counters}
         </View>
     );
 }
@@ -86,3 +97,4 @@ const styles = StyleSheet.create({
     }
 
 });
+
