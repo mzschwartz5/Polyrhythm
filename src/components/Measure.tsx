@@ -9,7 +9,7 @@ import { ButtonTapEvent } from '../classes/InputHandler';
 import { useContext } from 'react';
 import { SettingsContext } from '../../App';
 
-interface IMeasureProps {
+export interface IMeasureProps {
     active: boolean;
 }
 
@@ -17,20 +17,19 @@ const Measure: React.FunctionComponent<IMeasureProps> = (props:IMeasureProps): J
 {
     const { active } = props;
     const [tapDots, setTapDots] = useState<number[]>([]); // fractions of measure duration where taps occurred
-    const [mountTime, setMountTime] = useState<number>(Date.now());  
     const [measureWidth, setMeasureWidth] = useState(0);
-    const addTapDot = (newDotTime: number) => setTapDots((prev) => [(newDotTime - mountTime) / measureDuration, ...prev]); 
     const PlaySettings = useContext(SettingsContext);
     const measureDuration = 1000 * PlaySettings.beatsPerMeasure / (PlaySettings.beatsPerMinute / 60) ; // duration in milliseconds
-
+    
     // On mount, start listening to Input Events; initialize timer. On unmount, stop listening.
     useEffect(() => {
         if (!active) return;
 
-        setMountTime(Date.now());
+        const activeTime = Date.now();
+        const addTapDot = (newDotTime: number) => setTapDots((prev) => [(newDotTime - activeTime) / measureDuration, ...prev]); 
 
         const subscriptionID = InputHandler.addEventListener(ButtonTapEvent, addTapDot) as string;
-        return () => {InputHandler.removeEventListener(subscriptionID)}; 
+        return () => { InputHandler.removeEventListener(subscriptionID)}; 
     }, [active]);
 
     // Create TapDot elements from the tapDots array of positions
