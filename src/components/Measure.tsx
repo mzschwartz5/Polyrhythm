@@ -1,6 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 import { Svg, Line } from 'react-native-svg';
 import Note from '../components/Note';
+import { Note as NoteData } from '../data/NoteTypes'
 import QuarterNote from 'music-notes/QuarterNote.png';
 import TapDot from './TapDot';
 import InputHandler from '../classes/InputHandler';
@@ -10,18 +11,19 @@ import { useContext } from 'react';
 import { SettingsContext } from '../../App';
 
 export interface IMeasureProps {
-    active: boolean;
+    active: boolean,
+    notes: NoteData[]
 }
 
 const Measure: React.FunctionComponent<IMeasureProps> = (props:IMeasureProps): JSX.Element =>
 {
-    const { active } = props;
+    const { active, notes } = props;
     const [tapDots, setTapDots] = useState<number[]>([]); // fractions of measure duration where taps occurred
     const [measureWidth, setMeasureWidth] = useState(0);
     const PlaySettings = useContext(SettingsContext);
     const measureDuration = 1000 * PlaySettings.beatsPerMeasure / (PlaySettings.beatsPerMinute / 60) ; // duration in milliseconds
     
-    // On mount, start listening to Input Events; initialize timer. On unmount, stop listening.
+    // On mount, start listening to Input Events. On unmount, stop listening.
     useEffect(() => {
         if (!active) return;
 
@@ -35,15 +37,15 @@ const Measure: React.FunctionComponent<IMeasureProps> = (props:IMeasureProps): J
     // Create TapDot elements from the tapDots array of positions
     const TapDots = tapDots.map((percentPosition) => <TapDot position={percentPosition * measureWidth} correct={true} key={percentPosition}/> );
 
+    // Create notes from note data
+    const Notes = notes.map((note, index) => <Note imageSrc={note.imageSource} height={50} width={50} key={index}/>); 
+
     return(
         <View style={styles.measureContainer}>
             <View style={styles.measure}  onLayout={(event) => setMeasureWidth(event.nativeEvent.layout.width)}>
                 <MeasureLine/>
                 <View style={styles.noteContainer}>
-                    <Note imageSrc={QuarterNote} height={50} width={50}/>
-                    <Note imageSrc={QuarterNote} height={50} width={50}/>
-                    <Note imageSrc={QuarterNote} height={50} width={50}/>
-                    <Note imageSrc={QuarterNote} height={50} width={50}/>
+                    {Notes}
                 </View>
                 <View style={styles.inputContainer}>
                     {TapDots}

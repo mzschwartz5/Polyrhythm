@@ -3,10 +3,12 @@ import { StyleSheet, View } from 'react-native';
 import MeasureGenerator from "./src/components/MeasureGenerator";
 import Metronome from "./src/components/Metronome";
 import TouchPad from './src/components/TouchPad';
+import { FourFourTime } from "./src/data/TimeSignatures";
 
 const PlaySettings = {
     beatsPerMinute: 100,
     beatsPerMeasure: 4,
+    timeSignature: FourFourTime
 }
 
 export const SettingsContext = createContext(PlaySettings);
