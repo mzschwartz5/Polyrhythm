@@ -1,11 +1,11 @@
 import { createContext } from "react";
 import { StyleSheet, View } from 'react-native';
-import MeasureGenerator from "./src/classes/MeasureGenerator";
+import MeasureGenerator from "./src/components/MeasureGenerator";
 import Metronome from "./src/components/Metronome";
 import TouchPad from './src/components/TouchPad';
 
 const PlaySettings = {
-    beatsPerMinute: 60,
+    beatsPerMinute: 100,
     beatsPerMeasure: 4,
 }
 
